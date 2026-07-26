@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
 
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected) {
+    return;
+  }
+
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    const db = await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://olamilekanmuhayad_db_user:1YCLrUDT7j0OWR13@cluster0.zpzvlt1.mongodb.net/romantic_gift?retryWrites=true&w=majority&appName=Cluster0');
+    isConnected = db.connections[0].readyState === 1;
+    console.log(`MongoDB Connected: ${db.connection.host}`);
   } catch (error) {
     console.error(`MongoDB Connection Error: ${error.message}`);
-    // Continue running even if DB connection fails so app remains operational
   }
 };
 
